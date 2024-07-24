@@ -2,28 +2,20 @@
   <div class="mb-8">
     <%= link_to '← Back to Organizations', organizations_path, class: "px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700" %>
   </div>
-  <div class="mb-8 flex justify-between items-center">
-    <div class="flex items-center">
-      <h1 class="text-2xl font-bold text-gray-700"><%= @organization.name %></h1>
+  <div class="mb-8 flex flex-col">
+    <div class="flex justify-between items-center">
+      <div class="flex items-center">
+        <h1 class="text-2xl font-bold text-gray-700"><%= @organization.name %></h1>
+      </div>
+      <div class="w-0"></div>
+    </div>
+    <div class="flex justify-start items-center mb-8">
+      <h2 class="text-md font-semibold text-gray-500">Current Pay Period: <%= @current_period.start_date.strftime('%m/%d/%Y') %> - <%= @current_period.end_date.strftime('%m/%d/%Y') %></h2>
     </div>
   </div>
   <div class="mb-8">
     <%= month_calendar(events: @payroll_periods, attribute: :start_date, end_attribute: :end_date) do |date, periods| %>
-      <div class="text-center">
-        <%= date.day %>
-        <% periods.each do |period| %>
-          <% if period.pay_days_in_period.include?(date) %>
-            <div class="text-xs bg-green-100 text-green-800 p-1 mt-1 rounded">
-              Pay Day
-            </div>
-          <% end %>
-          <% if date == period.start_date %>
-            <div class="text-xs bg-blue-100 text-blue-800 p-1 mt-1 rounded">
-              Start of <%= period.period_type.capitalize %>
-            </div>
-          <% end %>
-        <% end %>
-      </div>
+      <%= render_calendar_day(date, periods) %>
     <% end %>
   </div>
   <div class="mb-8">
@@ -48,31 +40,29 @@
                 <td class="px-5 py-5 text-left"><%= period.start_date.strftime('%m/%d/%Y') %></td>
                 <td class="px-5 py-5 text-left"><%= period.end_date.strftime('%m/%d/%Y') %></td>
                 <td class="px-5 py-5 text-left">
-                  <div class="px-2 py-1 rounded-full text-xs w-24 text-center
-                    <%= period.period_type == 'weekly' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800' %>">
-                    <%= period.period_type.capitalize %>
+                  <div class="px-2 py-1 rounded-full text-xs w-20 text-center <%= period_type_class(period.period_type) %>">
+                    <%= period_display_text(period) %>
                   </div>
-                </td>
-                <td class="px-5 py-5 text-right">
-                  <div class="flex justify-end items-center">
-                    <%= link_to "Edit", edit_organization_payroll_period_path(@organization, period), class: "px-3 py-1 rounded-md text-xs text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 mr-2" %>
-                    <%= button_to "Delete", organization_payroll_period_path(@organization, period), method: :delete, data: { "turbo-confirm": "Are you sure you want to delete this payroll period?" }, class: "px-3 py-1 rounded-md text-xs text-gray-700 bg-white border border-gray-300 hover:bg-gray-50" %>
-                  </div>
-                </td>
-              </tr>
-            <% end %>
-          </tbody>
-        </table>
-      <% else %>
-        <div class="text-center py-10">
-          <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-            <path vector-effect="non-scaling-stroke" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
-          </svg>
-          <p class="mt-1 text-sm text-gray-500">
-            No payroll periods found. Click "New Payroll Period" to create one.
-          </p>
-        </div>
-      <% end %>
+                  <td class="px-5 py-5 text-right">
+                    <div class="flex justify-end items-center">
+                      <%= link_to "Edit", edit_organization_payroll_period_path(@organization, period), class: "px-3 py-1 rounded-md text-xs text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 mr-2" %>
+                      <%= button_to "Delete", organization_payroll_period_path(@organization, period), method: :delete, data: { "turbo-confirm": "Are you sure you want to delete this payroll period?" }, class: "px-3 py-1 rounded-md text-xs text-gray-700 bg-white border border-gray-300 hover:bg-gray-50" %>
+                    </div>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        <% else %>
+          <div class="text-center py-10">
+            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+              <path vector-effect="non-scaling-stroke" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+            </svg>
+            <p class="mt-1 text-sm text-gray-500">
+              No payroll periods found. Click "New Payroll Period" to create one.
+            </p>
+          </div>
+        <% end %>
+      </div>
     </div>
   </div>
-</div>

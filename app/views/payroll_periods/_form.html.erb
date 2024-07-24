@@ -5,7 +5,7 @@
       <p class="mt-1 text-sm text-gray-600">Please fill in the details for this payroll period.</p>
     </div>
     <div class="px-8 py-6">
-      <%= form_with(model: [@organization, payroll_period], local: true, class: "space-y-6") do |form| %>
+      <%= form_with(model: [@organization, payroll_period], local: true, class: "space-y-6", data: { controller: "custom-range-visibility" }) do |form| %>
         <% if payroll_period.errors.any? %>
           <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4 rounded-md" role="alert">
             <p><%= pluralize(payroll_period.errors.count, "error") %></p>
@@ -27,11 +27,11 @@
           </div>
           <div>
             <%= form.label :period_type, class: 'block text-sm font-medium text-gray-700 mb-2' %>
-            <%= form.select :period_type, options_for_select([['Weekly', 'weekly'], ['Biweekly', 'biweekly'], ['Monthly', 'monthly'], ['Custom', 'custom']], payroll_period.period_type), { include_blank: 'Select a type' }, class: 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline', id: 'period_type_select' %>
+            <%= form.select :period_type, options_for_select([['Weekly', 'weekly'], ['Biweekly', 'biweekly'], ['Monthly', 'monthly'], ['Custom', 'custom']], payroll_period.period_type), { include_blank: 'Select a type' }, { class: 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline', data: { action: 'change->custom-range-visibility#toggleCustomRange', custom_range_visibility_target: 'periodType' } } %>
           </div>
-          <div id="custom_range_field" style="display: none;">
+          <div data-custom-range-visibility-target="customRange" class="hidden">
             <%= form.label :custom_range, "Custom Range (in days)", class: 'block text-sm font-medium text-gray-700 mb-2' %>
-            <%= form.number_field :custom_range, min: 1, class: 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline' %>
+            <%= form.number_field :custom_range, min: 1, class: 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline', data: { custom_range_visibility_target: "customRangeInput" } %>
           </div>
         </div>
         <div class="flex items-center justify-end mt-6">
