@@ -8,8 +8,10 @@ class OrganizationsController < ApplicationController
 
   def show
     @organization = Organization.find(params[:id])
-    @current_period = @organization.payroll_periods.where('start_date <= ? AND end_date >= ?', Date.today,
-                                                          Date.today).first
+    @current_period = @organization
+                      .payroll_periods
+                      .where('start_date <= ? AND end_date >= ?', Date.today, Date.today)
+                      .first
     @payroll_periods = @organization.payroll_periods.order(start_date: :desc)
   end
 end

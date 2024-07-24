@@ -2,8 +2,6 @@
 
 # PayrollPeriodsController handles requests for payroll periods.
 class PayrollPeriodsController < ApplicationController
-  include PayrollPeriodConcern
-
   before_action :set_organization
   before_action :set_payroll_period, only: %i[edit update destroy]
 
@@ -14,17 +12,19 @@ class PayrollPeriodsController < ApplicationController
   end
 
   def create
-    create_payroll_period
+    @payroll_period = @organization.payroll_periods.new(payroll_period_params)
+    if @payroll_period.save
+      redirect_to @organization, notice: 'Payroll period was successfully created.'
+    else
+      render :new, status: :unprocessable_entity
+    end
   end
-
-  def edit; end
 
   def update
     if @payroll_period.update(payroll_period_params)
       redirect_to @organization, notice: 'Payroll period was successfully updated.'
     else
-      flash.now[:error] = 'There was an error updating the payroll period.'
-      render :edit
+      render :edit, status: :unprocessable_entity
     end
   end
 
