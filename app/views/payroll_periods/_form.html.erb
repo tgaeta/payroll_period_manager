@@ -1,0 +1,44 @@
+<div class="flex justify-center items-center w-full max-h-screen p-2 md:p-4">
+  <div class="w-full md:w-[800px] bg-white shadow-lg rounded-lg overflow-hidden">
+    <div class="px-4 md:px-8 py-3 md:py-6 bg-gray-50 border-b border-gray-200">
+      <h2 class="text-2xl font-bold text-gray-900"><%= "#{title} Payroll Period" %></h2>
+      <p class="mt-1 text-sm text-gray-600">Please fill in the details for this payroll period.</p>
+    </div>
+    <div class="px-8 py-6">
+      <%= form_with(model: [@organization, payroll_period], local: true, class: "space-y-6") do |form| %>
+        <% if payroll_period.errors.any? %>
+          <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4 rounded-md" role="alert">
+            <p><%= pluralize(payroll_period.errors.count, "error") %></p>
+            <ul class="list-disc list-inside">
+              <% payroll_period.errors.full_messages.each do |message| %>
+                <li><%= message %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <%= form.label :start_date, class: 'block text-sm font-medium text-gray-700 mb-2' %>
+            <%= form.date_field :start_date, class: 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline' %>
+          </div>
+          <div>
+            <%= form.label :end_date, class: 'block text-sm font-medium text-gray-700 mb-2' %>
+            <%= form.date_field :end_date, class: 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline' %>
+          </div>
+          <div>
+            <%= form.label :period_type, class: 'block text-sm font-medium text-gray-700 mb-2' %>
+            <%= form.select :period_type, options_for_select([['Weekly', 'weekly'], ['Biweekly', 'biweekly'], ['Monthly', 'monthly'], ['Custom', 'custom']], payroll_period.period_type), { include_blank: 'Select a type' }, class: 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline', id: 'period_type_select' %>
+          </div>
+          <div id="custom_range_field" style="display: none;">
+            <%= form.label :custom_range, "Custom Range (in days)", class: 'block text-sm font-medium text-gray-700 mb-2' %>
+            <%= form.number_field :custom_range, min: 1, class: 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline' %>
+          </div>
+        </div>
+        <div class="flex items-center justify-end mt-6">
+          <%= link_to 'Cancel', organization_path(@organization), class: 'bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mr-2' %>
+          <%= form.submit "Save", class: 'bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline' %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

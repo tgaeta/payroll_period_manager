@@ -12,4 +12,12 @@
  *
  *= require_tree .
  *= require_self
+ *= require simple_calendar
  */
+
+body {
+  background-image: url('../background-pattern.png');
+  background-repeat: repeat;
+  background-position: center;
+  background-attachment: fixed;
+}
