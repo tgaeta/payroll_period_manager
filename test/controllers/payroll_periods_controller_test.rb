@@ -42,7 +42,6 @@ class PayrollPeriodsControllerTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_entity
   end
 
-  # it should not have a gap between the end date of the previous period and the start date of the new period
   test 'should not create payroll_period with a gap' do
     assert_no_difference('PayrollPeriod.count') do
       post organization_payroll_periods_url(@organization), params: {
