@@ -2,7 +2,7 @@
 
 Rails.application.routes.draw do
   resources :organizations do
-    resources :payroll_periods
+    resources :payroll_periods, except: [:show]
   end
 
   root 'organizations#index'
