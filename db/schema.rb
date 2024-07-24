@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_07_24_131957) do
+ActiveRecord::Schema[7.1].define(version: 2024_07_24_184550) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -27,6 +27,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_24_131957) do
     t.string "period_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "custom_range"
     t.index ["organization_id"], name: "index_payroll_periods_on_organization_id"
   end
 
