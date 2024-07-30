@@ -70,16 +70,29 @@ class PayrollPeriod < ApplicationRecord
 
   # Validates that there are no gaps with adjacent periods
   def no_gaps_with_adjacent_periods
-    previous_period = organization.payroll_periods.past.where('end_date < ?', start_date).order(end_date: :desc).first
-    next_period = organization.payroll_periods.future.where('start_date > ?', end_date).order(start_date: :asc).first
+    # Find the most recent period that ends before the new period starts
+    previous_period = organization.payroll_periods
+                                  .where('end_date < ?', start_date)
+                                  .order(end_date: :desc)
+                                  .first
 
+    # Find the earliest period that starts after the new period ends
+    next_period = organization.payroll_periods
+                              .where('start_date > ?', end_date)
+                              .order(start_date: :asc)
+                              .first
+
+    # Check for gap with previous period
     if previous_period && previous_period.end_date != start_date - 1.day
-      errors.add(:start_date, 'must be the day after the previous period\'s end date')
+      errors.add(:base,
+                 "There is a gap between the previous period end date (#{previous_period.end_date}) and this period's start date (#{start_date})")
     end
 
+    # Check for gap with next period
     return unless next_period && next_period.start_date != end_date + 1.day
 
-    errors.add(:end_date, 'must be the day before the next period\'s start date')
+    errors.add(:base,
+               "There is a gap between this period's end date (#{end_date}) and the next period start date (#{next_period.start_date})")
   end
 
   # Validates that the payroll period does not overlap with existing periods.
